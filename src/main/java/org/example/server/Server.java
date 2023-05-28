@@ -42,8 +42,20 @@ public class Server{
 
 
             if (path.equals("/users") && method.equals("GET")){
-                JSONArray jsonArray = usersController.getUser();
-                response = jsonArray.toString();}
+                String type = exchange
+                        .getRequestURI()
+                        .getQuery();
+                type = type.substring(type.lastIndexOf('=')+1);
+
+                if (type != null && (type.equals("Buyer") || type.equals("Seller"))){
+                    response = usersController.getUser(type)
+                            .toString();
+                }else {
+                    JSONArray jsonArray = usersController.getUser();
+                    response = jsonArray.toString();
+//                    response=type;
+                }
+            }
             else if (path.matches("/users/\\d+") && method.equals("GET")){
                 int userId = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
                 JSONArray jsonArray = usersController.getUser(userId);
@@ -57,29 +69,54 @@ public class Server{
             else if (path.matches("/users/\\d+") && method.equals("DELETE")) {
                 int userId = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
 //                boolean done = usersController.deleteUser(userId);
-                usersController.deleteUser(userId);
-//                if (done){
-//                    response = "User id =" + userId + " deleted";
-//                }else {
-//                    response = "User Not Found";
-//                }
+                boolean done = usersController.deleteUser(userId);
+                if (done){
+                    response = "User id =" + userId + " deleted";
+                }else {
+                    response = "User Not Found";
+                }
             }
-            else if(path.equals("/products") && method.equals("GET")){
+            else if(path.equals("/users") && method.equals("POST")){
+                JSONObject requestBodyJson = parseRequestBody(exchange.getRequestBody());
+                if (usersController.addUser(requestBodyJson)){
+                    response = "User Added";
+                }else {
+                    response = "Invalid Data";
+                }
+            }
+            else if (path.matches("/users/\\d+")&& method.equals("PUT")) {
+                JSONObject requestBodyJson = parseRequestBody(exchange.getRequestBody());
+                int idUser = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
+//
+                if (usersController.updateUser(idUser,requestBodyJson)){
+                    response = "Data User Updated";
+                }else {
+                    response = "Invalid Data";
+                }
+            }
+            else if (path.equals("/users") && method.equals("GET")) {
+                String type = exchange.getRequestURI().getQuery();
+                if (type != null && (type.equals("Buyer") || type.equals("Seller"))){
+                    response = usersController.getUser(type)
+                            .toString();
 
+                }else {
+                    response = "Invalid Type";
+                }
             }
 
 
             OutputStream outputStream = exchange.getResponseBody();
-//            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
             exchange.sendResponseHeaders(200, response.length());
             outputStream.write(response.getBytes());
             outputStream.flush();
             outputStream.close();
         }
-//        private JSONObject parseRequestBody(InputStream requestBody) throws IOException {
-//            byte[] requestBodyBytes = requestBody.readAllBytes();
-//            String requestBodyString = new String(requestBodyBytes);
-//            return new JSONObject(requestBodyString);
-//        }
+        private JSONObject parseRequestBody(InputStream requestBody) throws IOException {
+            byte[] requestBodyBytes = requestBody.readAllBytes();
+            String requestBodyString = new String(requestBodyBytes);
+            return new JSONObject(requestBodyString);
+        }
     }
 }
