@@ -58,5 +58,31 @@ public class UsersController {
         return jsonArray;
     }
 
+    public void deleteUser(int idUser){
+//        String querySql = "DELETE FROM users WHERE id=?";
+//        try(Connection connection = databaseManager.getConnection();
+//            PreparedStatement statement = connection.prepareStatement(querySql)){
+//            statement.setInt(1,idUser);
+//            int rowDeleted = statement.executeUpdate();
+//            return rowDeleted > 0;
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }
+
+
+        PreparedStatement statement = null;
+        String querySql = "DELETE FROM users WHERE id="+idUser;
+        try {
+            statement = this.databaseManager
+                    .getConnection()
+                    .prepareStatement(querySql);
+            statement.execute();
+//            int rowDeleted = statement.executeUpdate();
+        }catch (SQLException e){
+            System.out.println(e);
+        }
+
+//        return true;
+    }
 
 }

@@ -39,34 +39,40 @@ public class Server{
             String method = exchange.getRequestMethod();
             String path = exchange.getRequestURI().getPath();
             String response = "";
-            OutputStream outputStream = exchange.getResponseBody();
+
+
             if (path.equals("/users") && method.equals("GET")){
                 JSONArray jsonArray = usersController.getUser();
-                response = jsonArray.toString();
-                exchange.sendResponseHeaders(200, response.length());
-                outputStream.write(response.getBytes());
-            }
+                response = jsonArray.toString();}
             else if (path.matches("/users/\\d+") && method.equals("GET")){
                 int userId = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
                 JSONArray jsonArray = usersController.getUser(userId);
                 if ( jsonArray != null){
                     response = jsonArray.toString();
-                    exchange.sendResponseHeaders(200, response.length());
-
                 }else {
                     response = " User Not Found";
-                    exchange.sendResponseHeaders(404, response.length());
-
                 }
-                outputStream.write(response.getBytes());
-            }
-            else if (path.equals("/users") && method.equals("DELETE")) {
 
+            }
+            else if (path.matches("/users/\\d+") && method.equals("DELETE")) {
+                int userId = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
+//                boolean done = usersController.deleteUser(userId);
+                usersController.deleteUser(userId);
+//                if (done){
+//                    response = "User id =" + userId + " deleted";
+//                }else {
+//                    response = "User Not Found";
+//                }
             }
             else if(path.equals("/products") && method.equals("GET")){
 
             }
 
+
+            OutputStream outputStream = exchange.getResponseBody();
+//            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            exchange.sendResponseHeaders(200, response.length());
+            outputStream.write(response.getBytes());
             outputStream.flush();
             outputStream.close();
         }
