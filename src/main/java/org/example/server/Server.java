@@ -5,6 +5,7 @@ import java.io.*;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.example.controller.OrdersController;
 import org.example.controller.ProductsController;
 import org.example.controller.UsersController;
 
@@ -21,11 +22,13 @@ public class Server{
     private static final int PORT = 8067;
     private UsersController usersController;
     private ProductsController productsController;
+    private OrdersController ordersController;
 
     public Server(){
         DatabaseManager databaseManager = new DatabaseManager("database/db_makanan_online.db");
         usersController = new UsersController(databaseManager);
         productsController = new ProductsController(databaseManager);
+        ordersController = new OrdersController(databaseManager);
     }
     public void httpConnection() throws IOException {
         HttpServer httpServer = HttpServer.create(new InetSocketAddress("localhost",PORT), 0);
@@ -184,11 +187,17 @@ public class Server{
             if (this.path.length == 4){
                 //path : /users/id/something
                 if (path[3].equals("products")){
-
+                    this.response = usersController
+                            .getUserProduct(Integer.parseInt(path[2]))
+                            .toString();
                 } else if (path[3].equals("orders")) {
-
+                    this.response = usersController
+                            .getUserOrder(Integer.parseInt(path[2]))
+                            .toString();
                 } else if (path[3].equals("reviews")) {
-
+                    this.response = usersController
+                            .getUserReview(Integer.parseInt(path[2]))
+                            .toString();
                 }
             } else if (this.path.length == 3) {
                 // path : /users/id
@@ -196,12 +205,6 @@ public class Server{
                         .getUser(Integer.parseInt(path[2]))
                         .toString();
 
-                if (this.response.equals("[]")){
-                    this.response = "Data Null";
-                    this.statusCode = 400;
-                }else {
-                    this.statusCode = 200;
-                }
             } else  if(this.path.length == 2){
                 // path : /users
                 if (query == null){
@@ -215,14 +218,13 @@ public class Server{
                 } else if (query.contains("field")) {
                     
                 }
+            }
 
-
-                if (this.response.equals("[]")){
-                    this.response = "Data Null";
-                    this.statusCode = 400;
-                }else {
-                    this.statusCode = 200;
-                }
+            if (this.response.equals("[]")){
+                this.response = "Data Null";
+                this.statusCode = 400;
+            }else {
+                this.statusCode = 200;
             }
         }
         private void productsHandle(){
@@ -242,7 +244,20 @@ public class Server{
             }
         }
         private void ordersHandle(){
+            if (this.path.length == 3){
+                // path  : /orders/id
+                this.response = ordersController
+                        .getOrders(Integer.parseInt(path[2]))
+                        .toString();
+                this.statusCode = 200;
 
+            }else if(this.path.length == 2){
+                // path : /orders
+                this.response = ordersController
+                        .getOrders()
+                        .toString();
+                this.statusCode = 200;
+            }
         }
 
 
@@ -299,7 +314,15 @@ public class Server{
             }
         }
         private void ordersHandle(){
-
+            // path : /orders/id
+            boolean done = ordersController.updateOrder(Integer.parseInt(path[2]),requestBodyJson);
+            if (done){
+                this.response = "Data Updated";
+                this.statusCode = 200;
+            }else {
+                this.response = "Data Invalid";
+                this.statusCode = 400;
+            }
         }
 
         public String getResponse(){
@@ -354,7 +377,15 @@ public class Server{
             }
         }
         private void ordersHandle(){
-
+            // path : /orders
+            boolean done = ordersController.addOrder(requestBodyJson);
+            if (done){
+                this.response = "Data Added";
+                this.statusCode = 200;
+            }else {
+                this.response = "Data Invalid";
+                this.statusCode = 400;
+            }
         }
 
         public String getResponse(){
@@ -407,7 +438,15 @@ public class Server{
             }
         }
         private void ordersHandle(){
-
+            // path : /products/id
+            boolean done = ordersController.deleteOrder(Integer.parseInt(path[2]));
+            if (done){
+                this.response = "Data Deleted";
+                this.statusCode = 200;
+            }else {
+                this.response = "Data Not Found";
+                this.statusCode = 400;
+            }
         }
 
         public String getResponse(){

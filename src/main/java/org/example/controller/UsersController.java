@@ -79,17 +79,74 @@ public class UsersController {
         }
         return jsonArray;
     }
+    public JSONArray getUserProduct(int idUser){
+        JSONArray jsonArray = new JSONArray();
+        String querySql = "SELECT * FROM products WHERE seller=" + idUser;
+
+        try(Connection connection = databaseManager.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(querySql)){
+            while (resultSet.next()){
+                JSONObject jsonUser = new JSONObject();
+                jsonUser.put("id",resultSet.getInt("id"));
+                jsonUser.put("seller",resultSet.getString("seller"));
+                jsonUser.put("title",resultSet.getString("title"));
+                jsonUser.put("description",resultSet.getString("description"));
+                jsonUser.put("price",resultSet.getString("price"));
+                jsonUser.put("stock",resultSet.getString("stock"));
+                jsonArray.put(jsonUser);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
+
+    public JSONArray getUserOrder(int idUSer){
+        JSONArray jsonArray = new JSONArray();
+        String querySql = "SELECT * FROM orders WHERE buyer=" + idUSer;
+        try(Connection connection = databaseManager.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(querySql)){
+            while (resultSet.next()){
+                JSONObject jsonUser = new JSONObject();
+                jsonUser.put("id",resultSet.getInt("id"));
+                jsonUser.put("buyer",resultSet.getInt("buyer"));
+                jsonUser.put("note",resultSet.getInt("note"));
+                jsonUser.put("total",resultSet.getInt("total"));
+                jsonUser.put("discount",resultSet.getInt("discount"));
+                jsonUser.put("isPaid",resultSet.getInt("is_paid"));
+                jsonArray.put(jsonUser);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
+
+    public JSONArray getUserReview(int idUSer){
+        JSONArray jsonArray = new JSONArray();
+        String querySql = "SELECT * FROM reviews INNER JOIN orders ON orders.id=reviews.order WHERE orders.buyer=" + idUSer;
+        try(Connection connection = databaseManager.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(querySql)){
+            while (resultSet.next()){
+                JSONObject jsonUser = new JSONObject();
+                jsonUser.put("order",resultSet.getInt("order"));
+                jsonUser.put("star",resultSet.getInt("star"));
+                jsonUser.put("description",resultSet.getString("description"));
+                jsonArray.put(jsonUser);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
 
     public boolean deleteUser(int idUser){
-//        String querySql = "DELETE FROM users WHERE id=?";
-//        try(Connection connection = databaseManager.getConnection();
-//            PreparedStatement statement = connection.prepareStatement(querySql)){
-//            statement.setInt(1,idUser);
-//            int rowDeleted = statement.executeUpdate();
-//            return rowDeleted > 0;
-//        }catch (SQLException e){
-//            e.printStackTrace();
-//        }
 
         int rowDeleted = 0;
         PreparedStatement statement = null;
