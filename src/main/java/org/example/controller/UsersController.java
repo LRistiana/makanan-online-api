@@ -38,6 +38,7 @@ public class UsersController {
     public JSONArray getUser(int userId){
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM users WHERE id=" + userId;
+        String querySql2 = "SELECT * FROM addresses WHERE users=" + userId;
 
         try(Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
@@ -50,8 +51,27 @@ public class UsersController {
                     jsonUser.put("email",resultSet.getString("email"));
                     jsonUser.put("phoneNumber",resultSet.getString("phone_number"));
                     jsonUser.put("type",resultSet.getString("type"));
+                    JSONArray jsonAddressesArray = new JSONArray();
+                    try(
+                            Statement statement2 = connection.createStatement();
+                            ResultSet resultSet2 = statement2.executeQuery(querySql2)){
+                        while (resultSet2.next()){
+                            JSONObject jsonAddresses = new JSONObject();
+                            jsonAddresses.put("line1",resultSet2.getString("line1"));
+                            jsonAddresses.put("line2",resultSet2.getString("line2"));
+                            jsonAddresses.put("type",resultSet2.getString("type"));
+                            jsonAddresses.put("city",resultSet2.getString("city"));
+                            jsonAddresses.put("province",resultSet2.getString("province"));
+                            jsonAddresses.put("postcode",resultSet2.getString("postcode"));
+                            jsonAddressesArray.put(jsonAddresses);
+                        }
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
+                    jsonUser.put("Adresses",jsonAddressesArray);
                     jsonArray.put(jsonUser);
                 }
+
         }catch (SQLException e){
             e.printStackTrace();
         }
