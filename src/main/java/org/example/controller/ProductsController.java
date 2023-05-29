@@ -60,6 +60,28 @@ public class ProductsController {
         }
         return jsonArray;
     }
+    public JSONArray getProductFilter(String field, String cond, int val){
+        JSONArray jsonArray = new JSONArray();
+        String querySql = "SELECT * FROM products WHERE " + field + cond + "'" + val + "'";
+
+        try(Connection connection = databaseManager.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(querySql)){
+            while (resultSet.next()){
+                JSONObject jsonUser = new JSONObject();
+                jsonUser.put("id",resultSet.getInt("id"));
+                jsonUser.put("seller",resultSet.getString("seller"));
+                jsonUser.put("title",resultSet.getString("title"));
+                jsonUser.put("description",resultSet.getString("description"));
+                jsonUser.put("price",resultSet.getString("price"));
+                jsonUser.put("stock",resultSet.getString("stock"));
+                jsonArray.put(jsonUser);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
 
     public boolean updateProduct(int idProduct, JSONObject requestBodyJson){
         int seller = requestBodyJson.optInt("seller");

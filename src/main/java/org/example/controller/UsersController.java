@@ -79,6 +79,29 @@ public class UsersController {
         }
         return jsonArray;
     }
+
+    public JSONArray getUserFilter(String field, String cond, int val){
+        JSONArray jsonArray = new JSONArray();
+        String querySql = "SELECT * FROM users WHERE " + field + cond + "'" + val + "'";
+
+        try(Connection connection = databaseManager.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(querySql)){
+            while (resultSet.next()){
+                JSONObject jsonUser = new JSONObject();
+                jsonUser.put("id",resultSet.getInt("id"));
+                jsonUser.put("firstName",resultSet.getString("first_name"));
+                jsonUser.put("lastName",resultSet.getString("last_name"));
+                jsonUser.put("email",resultSet.getString("email"));
+                jsonUser.put("phoneNumber",resultSet.getString("phone_number"));
+                jsonUser.put("type",resultSet.getString("type"));
+                jsonArray.put(jsonUser);
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
     public JSONArray getUserProduct(int idUser){
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM products WHERE seller=" + idUser;
@@ -128,7 +151,7 @@ public class UsersController {
 
     public JSONArray getUserReview(int idUSer){
         JSONArray jsonArray = new JSONArray();
-        String querySql = "SELECT * FROM reviews INNER JOIN orders ON orders.id=reviews.order WHERE orders.buyer=" + idUSer;
+        String querySql = "SELECT * FROM reviews INNER JOIN orders ON orders.id=reviews.'order' WHERE orders.buyer=" + idUSer;
         try(Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(querySql)){

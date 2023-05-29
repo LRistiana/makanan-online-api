@@ -167,6 +167,10 @@ public class Server{
         private String query;
         private String response;
         private int statusCode;
+
+        private int queryValue;
+        private String queryCondition;
+        private String queryField;
         GetHandler(String[] path,String query){
             this.path = path;
             this.query = query;
@@ -181,6 +185,28 @@ public class Server{
             } else if (this.path[1].equals("orders")) {
                 ordersHandle();
             }
+        }
+        private void queryCheck(String query){
+            String[] querys = query.split("&");
+            for ( String i : querys) {
+                if (i.contains("field")){
+                    this.queryField = i.substring(i.lastIndexOf("=")+1);
+                } else if (i.contains("val")) {
+                    this.queryValue = Integer.parseInt(i.substring(i.lastIndexOf("=")+1));
+                } else if (i.contains("cond")) {
+                    String cond = i.substring(i.lastIndexOf("=")+1);
+                    if (cond.equals("larger")){
+                        this.queryCondition = ">";
+                    } else if (cond.equals("smaller")){
+                        this.queryCondition = "<";
+                    }else if (cond.equals("smallerEqual")){
+                        this.queryCondition = "<=";
+                    }else if (cond.equals("largerEqual")){
+                        this.queryCondition = ">=";
+                    }
+                }
+            }
+
         }
         private void usersHandle(){
 
@@ -216,7 +242,10 @@ public class Server{
                     response = usersController.getUser(query)
                             .toString();
                 } else if (query.contains("field")) {
-                    
+                    queryCheck(query);
+                    response = usersController.getUserFilter(this.queryField, this.queryCondition, this.queryValue)
+                            .toString();
+
                 }
             }
 
@@ -237,9 +266,16 @@ public class Server{
 
             }else if(this.path.length == 2){
                 // path : /products
-                this.response = productsController
-                        .getProducts()
-                        .toString();
+                if (query == null){
+                    this.response = productsController
+                            .getProducts()
+                            .toString();
+                } else if (query.contains("field")) {
+                    queryCheck(query);
+                    response = productsController.getProductFilter(this.queryField, this.queryCondition, this.queryValue)
+                            .toString();
+                }
+
                 this.statusCode = 200;
             }
         }
