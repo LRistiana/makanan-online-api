@@ -19,9 +19,11 @@ public class ProductsController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM products";
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
+
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -42,9 +44,11 @@ public class ProductsController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM products WHERE id=" + idProduct;
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
+
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -64,9 +68,11 @@ public class ProductsController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM products WHERE " + field + cond + "'" + val + "'";
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
+
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));

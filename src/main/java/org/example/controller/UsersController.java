@@ -16,10 +16,10 @@ public class UsersController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM users";
 
-
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
                 while (resultSet.next()){
                     JSONObject jsonUser = new JSONObject();
                     jsonUser.put("id",resultSet.getInt("id"));
@@ -40,9 +40,11 @@ public class UsersController {
         String querySql = "SELECT * FROM users WHERE id=" + userId;
         String querySql2 = "SELECT * FROM addresses WHERE users=" + userId;
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
+
                 while (resultSet.next()){
                     JSONObject jsonUser = new JSONObject();
                     jsonUser.put("id",resultSet.getInt("id"));
@@ -52,9 +54,10 @@ public class UsersController {
                     jsonUser.put("phoneNumber",resultSet.getString("phone_number"));
                     jsonUser.put("type",resultSet.getString("type"));
                     JSONArray jsonAddressesArray = new JSONArray();
-                    try(
-                            Statement statement2 = connection.createStatement();
-                            ResultSet resultSet2 = statement2.executeQuery(querySql2)){
+                    try{
+                        Statement statement2 = connection.createStatement();
+                        ResultSet resultSet2 = statement2.executeQuery(querySql2);
+
                         while (resultSet2.next()){
                             JSONObject jsonAddresses = new JSONObject();
                             jsonAddresses.put("line1",resultSet2.getString("line1"));
@@ -81,9 +84,10 @@ public class UsersController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM users WHERE type='" + type + "'";
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -99,14 +103,14 @@ public class UsersController {
         }
         return jsonArray;
     }
-
     public JSONArray getUserFilter(String field, String cond, int val){
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM users WHERE " + field + cond + "'" + val + "'";
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -126,9 +130,10 @@ public class UsersController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM products WHERE seller=" + idUser;
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -145,13 +150,13 @@ public class UsersController {
 
         return jsonArray;
     }
-
     public JSONArray getUserOrder(int idUSer){
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM orders WHERE buyer=" + idUSer;
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -168,13 +173,13 @@ public class UsersController {
 
         return jsonArray;
     }
-
     public JSONArray getUserReview(int idUSer){
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM reviews INNER JOIN orders ON orders.id=reviews.'order' WHERE orders.buyer=" + idUSer;
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("order",resultSet.getInt("order"));
@@ -190,7 +195,6 @@ public class UsersController {
     }
 
     public boolean deleteUser(int idUser){
-
         int rowDeleted = 0;
         PreparedStatement statement = null;
         String querySql = "DELETE FROM users WHERE id="+idUser;
@@ -198,7 +202,7 @@ public class UsersController {
             statement = this.databaseManager
                     .getConnection()
                     .prepareStatement(querySql);
-//            statement.execute();
+
             rowDeleted = statement.executeUpdate();
         }catch (SQLException e){
             System.out.println(e);
@@ -206,7 +210,6 @@ public class UsersController {
 
         return rowDeleted > 0;
     }
-
     public boolean addUser(JSONObject requestBodyJson){
         String firstName = requestBodyJson.optString("firstName");
         String lastName = requestBodyJson.optString("lastName");

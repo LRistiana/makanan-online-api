@@ -19,9 +19,11 @@ public class OrdersController {
         JSONArray jsonArray = new JSONArray();
         String querySql = "SELECT * FROM orders";
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
+
             while (resultSet.next()){
                 JSONObject jsonUser = new JSONObject();
                 jsonUser.put("id",resultSet.getInt("id"));
@@ -48,9 +50,11 @@ public class OrdersController {
                 "WHERE orders_details.'order'=" + idOrder;
         String querySqlReview = "SELECT * FROM reviews WHERE reviews.'order'="+idOrder;
 
-        try(Connection connection = databaseManager.getConnection();
+        try{
+            Connection connection = databaseManager.getConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(querySql)){
+            ResultSet resultSet = statement.executeQuery(querySql);
+
             while (resultSet.next()){
                 JSONObject jsonOrder = new JSONObject();
                 jsonOrder.put("id",resultSet.getInt("id"));
@@ -63,9 +67,10 @@ public class OrdersController {
                 jsonOrder.put("isPaid",resultSet.getInt("is_paid"));
 
                 JSONArray jsonDetailArray = new JSONArray();
-                try(
+                try{
                     Statement statementDetail = connection.createStatement();
-                    ResultSet resultSetDetail = statementDetail.executeQuery(querySqlDetail)){
+                    ResultSet resultSetDetail = statementDetail.executeQuery(querySqlDetail);
+
                     while (resultSetDetail.next()){
                         JSONObject jsonOrderDetail = new JSONObject();
                         jsonOrderDetail.put("product",resultSetDetail.getString("title"));
@@ -79,9 +84,10 @@ public class OrdersController {
                 jsonOrder.put("Order_detail", jsonDetailArray);
 
                 JSONArray jsonReviews = new JSONArray();
-                try(
-                        Statement statementReview = connection.createStatement();
-                        ResultSet resultSetReview = statementReview.executeQuery(querySqlReview)){
+                try{
+                    Statement statementReview = connection.createStatement();
+                    ResultSet resultSetReview = statementReview.executeQuery(querySqlReview);
+
                     while (resultSetReview.next()){
                         JSONObject jsonReview = new JSONObject();
                         jsonReview.put("star",resultSetReview.getInt("star"));

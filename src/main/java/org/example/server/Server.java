@@ -80,73 +80,8 @@ public class Server{
                 statusCode = deleteHandler.getStatusCode();
             }else {
                 response = "Request Method Invalid";
+                statusCode = 400;
             }
-
-//
-//            if (path.equals("/users") && method.equals("GET")){
-//                String type = exchange
-//                        .getRequestURI()
-//                        .getQuery();
-//                type = type.substring(type.lastIndexOf('=')+1);
-//
-//                if (type != null && (type.equals("Buyer") || type.equals("Seller"))){
-//                    response = usersController.getUser(type)
-//                            .toString();
-//                }else {
-//                    JSONArray jsonArray = usersController.getUser();
-//                    response = jsonArray.toString();
-////                    response=type;
-//                }
-//            }
-//            else if (path.matches("/users/\\d+") && method.equals("GET")){
-//                int userId = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
-//                JSONArray jsonArray = usersController.getUser(userId);
-//                if ( jsonArray != null){
-//                    response = jsonArray.toString();
-//                }else {
-//                    response = " User Not Found";
-//                }
-//
-//            }
-//            else if (path.matches("/users/\\d+") && method.equals("DELETE")) {
-//                int userId = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
-////                boolean done = usersController.deleteUser(userId);
-//                boolean done = usersController.deleteUser(userId);
-//                if (done){
-//                    response = "User id =" + userId + " deleted";
-//                }else {
-//                    response = "User Not Found";
-//                }
-//            }
-//            else if(path.equals("/users") && method.equals("POST")){
-//                JSONObject requestBodyJson = parseRequestBody(exchange.getRequestBody());
-//                if (usersController.addUser(requestBodyJson)){
-//                    response = "User Added";
-//                }else {
-//                    response = "Invalid Data";
-//                }
-//            }
-//            else if (path.matches("/users/\\d+")&& method.equals("PUT")) {
-//                JSONObject requestBodyJson = parseRequestBody(exchange.getRequestBody());
-//                int idUser = Integer.parseInt(path.substring(path.lastIndexOf('/')+1));
-////
-//                if (usersController.updateUser(idUser,requestBodyJson)){
-//                    response = "Data User Updated";
-//                }else {
-//                    response = "Invalid Data";
-//                }
-//            }
-//            else if (path.equals("/users") && method.equals("GET")) {
-//                String type = exchange.getRequestURI().getQuery();
-//                if (type != null && (type.equals("Buyer") || type.equals("Seller"))){
-//                    response = usersController.getUser(type)
-//                            .toString();
-//
-//                }else {
-//                    response = "Invalid Type";
-//                }
-//            }
-
 
             OutputStream outputStream = exchange.getResponseBody();
             exchange.getResponseHeaders().set("Content-Type", "application/json");
@@ -184,6 +119,9 @@ public class Server{
                 productsHandle();
             } else if (this.path[1].equals("orders")) {
                 ordersHandle();
+            }else {
+                this.response = "Invalid Path";
+                this.statusCode = 400;
             }
         }
         private void queryCheck(String query){
@@ -276,7 +214,12 @@ public class Server{
                             .toString();
                 }
 
-                this.statusCode = 200;
+                if (this.response.equals("[]")){
+                    this.response = "Data Null";
+                    this.statusCode = 400;
+                }else {
+                    this.statusCode = 200;
+                }
             }
         }
         private void ordersHandle(){
@@ -285,13 +228,19 @@ public class Server{
                 this.response = ordersController
                         .getOrders(Integer.parseInt(path[2]))
                         .toString();
-                this.statusCode = 200;
 
             }else if(this.path.length == 2){
                 // path : /orders
                 this.response = ordersController
                         .getOrders()
                         .toString();
+            }
+
+
+            if (this.response.equals("[]")){
+                this.response = "Data Null";
+                this.statusCode = 400;
+            }else {
                 this.statusCode = 200;
             }
         }
@@ -324,6 +273,9 @@ public class Server{
                 productsHandle();
             } else if (this.path[1].equals("orders")) {
                 ordersHandle();
+            }else {
+                this.response = "Path Invalid";
+                this.statusCode = 400;
             }
         }
         private void usersHandle(){
@@ -387,6 +339,9 @@ public class Server{
                 productsHandle();
             } else if (this.path[1].equals("orders")) {
                 ordersHandle();
+            }else {
+                this.response = "Path Invalid";
+                this.statusCode = 400;
             }
         }
         private void usersHandle(){
@@ -448,6 +403,9 @@ public class Server{
                 productsHandle();
             } else if (this.path[1].equals("orders")) {
                 ordersHandle();
+            }else {
+                this.response = "Request Method Invalid";
+                this.statusCode = 400;
             }
         }
         private void usersHandle(){

@@ -14,16 +14,23 @@ public class DatabaseManager {
     }
 
     public Connection getConnection() {
-        return connection;
-    }
-
-    public void closeConnection() {
         try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
+            if (connection.isClosed()) {
+//                connection.;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return connection;
     }
+
+//    public void closeConnection() {
+//        try {
+//            if (connection != null && !connection.isClosed()) {
+//                connection.close();
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
