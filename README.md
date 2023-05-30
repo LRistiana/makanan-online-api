@@ -8,6 +8,36 @@ API ini dapat menghandle empat request method yaitu
 * POST
 * PUT
 * DELETE
+Status Code 200 Untuk Sukses <br/>
+Status Code 400 Untuk Invalid request
+
+## Struktur Program
+berikut ini merupakan class yang digunakan di makanan-online-api
+### server
+class ini berfungsi sebagai entry point dan mengontrol alur request dari api<br/>
+di dalam class ini terdapat beberapa class pendukung seperti
+* Handler
+class ini akan menjadi entry poin
+* GetHandler
+class ini untuk memetakan request dari request method GET
+* PutHandler
+class ini untuk memetakan request dari request method PUT
+* Post Handler
+class ini untuk memetakan request dari request method POST
+* DeleteHandler
+class ini untuk memetakan request dari request method DELETE
+
+### DatabaseManager
+class ini digunakan untuk konektivitas dengan database SQLLite
+
+### OrdersController
+class ini digunakan untuk menghandle request dari entitas Orders
+
+### ProductsController
+class ini digunakan untuk menghandle request dari entitas Products
+
+### UsersController
+class ini digunakan untuk menghandle request dari entitas Users
 
 
 ## Menggunakan Program
@@ -241,4 +271,4 @@ result :
 ```
 ### request method Post
 ### request method Put
-## request method Delete
+### request method Delete
