@@ -7,7 +7,7 @@ API ini dapat menghandle empat request method yaitu
 * GET
 * POST
 * PUT
-* DELETE
+* DELETE<br/>
 Status Code 200 Untuk Sukses <br/>
 Status Code 400 Untuk Invalid request
 
@@ -270,5 +270,74 @@ result :
 ]
 ```
 ### request method Post
+format path
+> http://localhost:8067/{entitas}
+<br/>format JSON users :
+```
+{
+    "firstName" : "VALUE",
+    "lastName" : "VALUE",
+    "email" : "VALUE",
+    "phoneNumber" : "VALUE",
+    "type" : "VALUE"
+}
+```
+<br/>format JSON products :
+```
+{
+    "seller" : VALUE,
+    "title" : "VALUE",
+    "description" : "VALUE",
+    "price" : "VALUE",
+    "stock" : VALUE
+}
+```
+<br/>format JSON orders :
+```
+{
+    "note": VALUE,
+    "isPaid": VALUE,
+    "total": VALUE,
+    "discount": VALUE,
+    "buyer": VALUE
+}
+```
 ### request method Put
+format path
+> http://localhost:8067/{entitas}/{id}
+<br/>format JSON users :
+```
+{
+    "id" : VALUE,
+    "firstName" : "VALUE",
+    "lastName" : "VALUE",
+    "email" : "VALUE",
+    "phoneNumber" : "VALUE",
+    "type" : "VALUE"
+}
+```
+<br/>format JSON products :
+```
+{
+    "id" : VALUE,
+    "seller" : VALUE,
+    "title" : "VALUE",
+    "description" : "VALUE",
+    "price" : "VALUE",
+    "stock" : VALUE
+}
+```
+<br/>format JSON orders :
+```
+{
+    "note": VALUE,
+    "isPaid": VALUE,
+    "total": VALUE,
+    "discount": VALUE,
+    "id": VALUE,
+    "buyer": VALUE
+}
+```
 ### request method Delete
+format path
+> http://localhost:8067/{entitas}/{id}
